@@ -18,6 +18,10 @@ git clone https://github.com/Mitpoppy/Elaina-plugin-TemplateStudio.git
 cp -r Elaina-plugin-TemplateStudio/tpl_studio <你的框架>/plugins/
 ```
 
+> 注意：插件代码在仓库内的 **`tpl_studio/` 子目录**，这是为了配合市场清单
+> `"type": "complete"` + `"path": "tpl_studio"` 的整目录安装方式。
+> 若整仓库按单文件插件（`single`）安装，只会取走根目录的 `main.py`，服务层与面板资源会丢失。
+
 然后重载插件：面板「插件模块」页点重载，或
 
 ```bash
