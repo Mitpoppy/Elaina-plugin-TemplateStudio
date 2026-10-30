@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模板工坊</title>
+<link rel="stylesheet" href="/api/ext/tpl-studio/assets/panel.css">
+<link rel="stylesheet" href="/api/ext/tpl-studio/assets/message-markdown.css">
+<link rel="stylesheet" href="/api/ext/tpl-studio/assets/preview.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== 左：模板列表 ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo" aria-label="模板工坊">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h4M7 12h7M7 16h5"/><path d="M16 8h1M17 12h.01M17 16h.01"/></svg>
+      </div>
+      <div><strong>模板工坊</strong><small>MARKDOWN + KEYBOARD</small></div>
+    </div>
+
+    <div class="side-actions">
+      <button class="btn primary block" id="btn-new" type="button">+ 新建模板</button>
+      <div class="side-minor">
+        <button class="btn" id="btn-import" type="button">导入</button>
+        <button class="btn" id="btn-export" type="button">导出</button>
+      </div>
+    </div>
+
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="list-search" autocomplete="off" placeholder="搜索名称 / 键 / 分类">
+    </label>
+
+    <div class="list-head"><span>模板</span><b id="list-count">0</b></div>
+    <div class="tpl-list" id="tpl-list"><div class="empty">加载中…</div></div>
+
+    <div class="side-foot"><span class="pulse"></span><span id="conn-state">正在连接</span></div>
+  </aside>
+
+  <!-- ===== 中：编辑器 ===== -->
+  <main class="editor">
+    <header class="topbar">
+      <div class="title-block">
+        <h1 id="editor-title">未选择模板</h1>
+        <p id="editor-key">从左侧选择一个模板，或点击「新建模板」</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn" id="btn-duplicate" type="button" disabled>复制</button>
+        <button class="btn danger" id="btn-delete" type="button" disabled>删除</button>
+        <button class="btn primary" id="btn-save" type="button" disabled>保存模板</button>
+      </div>
+    </header>
+
+    <div class="body" id="editor-body" hidden>
+      <section class="card">
+        <div class="card-head"><h2>基础信息</h2><p>保存后出现在左侧列表</p></div>
+        <div class="card-body meta-grid">
+          <label class="field"><span>模板键（唯一，用于命令引用）</span><input id="f-key" autocomplete="off" spellcheck="false" maxlength="64" placeholder="welcome-card"></label>
+          <label class="field"><span>显示名称</span><input id="f-label" autocomplete="off" maxlength="120" placeholder="入群欢迎卡片"></label>
+          <label class="field"><span>分类</span><input id="f-category" autocomplete="off" maxlength="80" placeholder="群管 / 通知 / 菜单"></label>
+          <label class="field"><span>消息类型 msg_type</span>
+            <select id="f-msg-type">
+              <option value="2">2 · Markdown</option>
+              <option value="0">0 · 纯文本</option>
+              <option value="3">3 · Ark</option>
+              <option value="7">7 · 富媒体</option>
+              <option value="8">8 · 卡片</option>
+            </select>
+          </label>
+        </div>
+        <div class="card-body switch-row">
+          <label class="switch"><span><b>小按钮</b><small>button_font_size=small</small></span><input id="f-small" type="checkbox"></label>
+          <label class="switch"><span><b>自动 @ 触发者</b><small>发送时正文前加 &lt;@{user_id}&gt;</small></span><input id="f-at-user" type="checkbox"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Markdown 正文</h2>
+          <div class="head-tools">
+            <button class="btn" id="btn-vars" type="button" aria-expanded="false">插入变量</button>
+            <button class="btn" id="btn-md-ref" type="button">语法参考</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="var-drawer" id="var-drawer" hidden>
+            <div class="var-groups" id="var-groups"></div>
+          </div>
+          <div class="md-ref" id="md-ref" hidden></div>
+          <textarea id="f-content" rows="10" spellcheck="false" placeholder="**加粗** 与 ![](https://…) 写在这里；{user_id} 这类占位符发送时由框架替换"></textarea>
+          <div class="hint-row" id="content-hints"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>按钮</h2>
+          <div class="head-tools">
+            <button class="btn" id="btn-add-row" type="button">+ 新行</button>
+            <button class="btn" id="btn-mode" type="button">切到 JSON</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="btn-visual"></div>
+          <textarea id="f-buttons" rows="10" spellcheck="false" hidden placeholder='[[{"text":"菜单","data":"/菜单","enter":true,"style":1}],[{"text":"官网","link":"https://example.com"}]]'></textarea>
+          <div class="hint-row" id="button-hints"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>字段速查</h2><p>框架 build_keyboard 认的字段</p></div>
+        <div class="card-body fields-table" id="fields-table"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>平台限制（实测）</h2><p>发送被拦时先对照这里</p></div>
+        <div class="card-body notes-list" id="platform-notes"></div>
+      </section>
+    </div>
+
+    <div class="empty-state" id="empty-state">
+      <strong>还没有选中模板</strong>
+      <span>左侧选择一个已有模板，或点击「新建模板」开始。首次加载会自动写入 3 个示例模板。</span>
+    </div>
+  </main>
+
+  <!-- ===== 右：预览 + JSON ===== -->
+  <aside class="preview-col">
+    <div class="preview-head">
+      <div><h2>实时预览</h2><p id="preview-caption">效果以实际 QQ 客户端为准</p></div>
+      <span class="live-dot"><i></i> LIVE</span>
+    </div>
+
+    <div class="chat">
+      <div class="chat-date" id="preview-date">模板预览</div>
+      <div class="chat-msg">
+        <div class="avatar"><span>✦</span></div>
+        <div class="chat-main">
+          <div class="chat-meta"><strong id="preview-bot">Elaina</strong><span>机器人</span><small>刚刚</small></div>
+          <div class="bubble">
+            <div id="preview-content" class="message-markdown"></div>
+            <div id="preview-keyboard" class="kbd" hidden></div>
+          </div>
+        </div>
+      </div>
+      <div class="preview-warn" id="preview-warn" role="status" hidden></div>
+    </div>
+
+    <div class="json-tabs" role="tablist">
+      <button type="button" data-tab="yaml" aria-pressed="true">templates.yaml</button>
+      <button type="button" data-tab="platform" aria-pressed="false">platform.keyboard</button>
+      <button type="button" data-tab="plugin" aria-pressed="false">插件存储</button>
+      <button type="button" data-tab="payload" aria-pressed="false">发送 payload</button>
+    </div>
+    <div class="json-pane">
+      <div class="json-actions">
+        <button class="btn" id="btn-copy-json" type="button">复制当前 JSON</button>
+        <button class="btn" id="btn-toggle-raw" type="button">从 JSON 应用</button>
+      </div>
+      <textarea id="json-out" rows="16" spellcheck="false" readonly></textarea>
+      <textarea id="json-in" rows="10" spellcheck="false" hidden placeholder="粘贴 JSON 后点「从 JSON 应用」"></textarea>
+      <div class="hint-row" id="json-hints"></div>
+    </div>
+
+    <div class="send-box">
+      <label class="field"><span>测试群 ID（把模板作为真实消息发到群里，含按钮）</span><input id="f-test-group" autocomplete="off" inputmode="numeric" placeholder="选择或填写群 ID"></label>
+      <div class="send-row">
+        <select id="f-group-pick" aria-label="选择群"><option value="">选择已有群</option></select>
+        <button class="btn primary" id="btn-test-send" type="button" disabled>测试发送</button>
+      </div>
+      <div class="send-tip">
+        实测平台限制：<b>主动消息</b>需要群已授权（否则 40034105）；<b>Markdown</b>需要机器人有该群模板权限（否则 40034127，可先把消息类型改成 0 纯文本试）。
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script type="module" src="/api/ext/tpl-studio/assets/panel.js"></script>
+</body>
+</html>

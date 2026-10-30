@@ -1,0 +1,57 @@
+/* 预览区补充样式：在 message-markdown.css 之上，处理 QQ 客户端特有的结构 */
+
+/* 指令胶囊 <qqbot-cmd-input text="..." show="..." /> */
+.message-markdown qqbot-cmd-input,
+.message-markdown .qqbot-cmd-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 2px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: .92em;
+  line-height: 1.7;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.message-markdown img {
+  max-width: 100%;
+  border-radius: 6px;
+}
+
+.message-markdown a {
+  color: var(--accent);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.message-markdown blockquote {
+  border-left: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  padding-left: 10px;
+  color: var(--text2);
+}
+
+.message-markdown table {
+  border-collapse: collapse;
+  font-size: .95em;
+}
+
+.message-markdown table th,
+.message-markdown table td {
+  border: 1px solid var(--line);
+  padding: 4px 8px;
+}
+
+/* 变量占位符高亮（预览里尚未替换的 {xxx}） */
+.message-markdown .tpl-var {
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  color: var(--warning);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: .9em;
+}

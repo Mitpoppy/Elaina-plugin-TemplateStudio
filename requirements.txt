@@ -1,0 +1,4 @@
+# 模板工坊依赖：无第三方 Python 依赖
+# 仅使用框架自带的 aiohttp 与标准库（json / os / tempfile / threading / time / re）
+#
+# 预览区的 Markdown 渲染（assets/message-markdown.js）已随包附带，无需 npm。
