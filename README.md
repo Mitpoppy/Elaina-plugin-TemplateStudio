@@ -15,12 +15,13 @@ ElainaBot v2 插件市场收录仓 —— **模板工坊**。
 
 ```bash
 git clone https://github.com/Mitpoppy/Elaina-plugin-TemplateStudio.git
-cp -r Elaina-plugin-TemplateStudio/tpl_studio <你的框架>/plugins/
+cp -r Elaina-plugin-TemplateStudio <你的框架>/plugins/tpl_studio
 ```
 
-> 注意：插件代码在仓库内的 **`tpl_studio/` 子目录**，这是为了配合市场清单
-> `"type": "complete"` + `"path": "tpl_studio"` 的整目录安装方式。
-> 若整仓库按单文件插件（`single`）安装，只会取走根目录的 `main.py`，服务层与面板资源会丢失。
+> 仓库根目录**就是插件本身**（`main.py` + `services/` + `web/` + `assets/`）。
+> 这样市场两种安装方式都能直接用：
+> - 官方市场清单：`"type": "complete"`，**不填 `path`** → 整仓库装到 `plugins/<name>/`
+> - 社区插件仓：整仓库 zip 安装，同样落成完整插件目录
 
 然后重载插件：面板「插件模块」页点重载，或
 
@@ -96,8 +97,9 @@ curl -X POST http://127.0.0.1:<端口>/api/plugins/reload \
 ## 插件结构
 
 ```
-tpl_studio/
+Elaina-plugin-TemplateStudio/   ← 仓库根 = 插件目录
 ├── main.py                 # 入口：注册侧边栏页面 + 路由；/模板工坊 命令
+├── requirements.txt
 ├── services/
 │   ├── store.py            # data/templates.json 原子写入 + mtime 缓存 + 示例播种
 │   └── validate.py         # 校验/规范化；调框架 build_keyboard 生成原生键盘
